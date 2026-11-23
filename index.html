@@ -1,520 +1,379 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Web.Zi — Digital experiences that move</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
-
-    :root {
-      --bg: #f5f4ef;
-      --ink: #171a18;
-      --muted: #777c76;
-      --green: #c8f169;
-      --line: #dedfd8;
-      --card: #fffefa;
-      --dark: #131816;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      color: var(--ink);
-      background: var(--bg);
-      font-family: "Manrope", sans-serif;
-    }
-    button, input { font: inherit; }
-    button { cursor: pointer; }
-    a { color: inherit; text-decoration: none; }
-
-    .topbar {
-      height: 76px;
-      padding: 0 6vw;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--line);
-      background: rgba(245,244,239,.92);
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      backdrop-filter: blur(14px);
-    }
-    .brand img { width: 144px; height: auto; display: block; }
-    .nav { display: flex; align-items: center; gap: 34px; font-size: 13px; color: #50554f; }
-    .nav a:hover { color: #000; }
-    .nav-cta, .button {
-      border: 0;
-      border-radius: 99px;
-      padding: 13px 20px;
-      background: var(--ink);
-      color: white;
-      font-weight: 700;
-      font-size: 12px;
-      transition: transform .2s, background .2s;
-    }
-    .nav-cta:hover, .button:hover { transform: translateY(-2px); background: #303832; }
-    .menu-toggle { display: none; }
-
-    .hero {
-      min-height: 680px;
-      padding: 92px 6vw 76px;
-      display: grid;
-      grid-template-columns: 1fr 1.06fr;
-      align-items: center;
-      gap: 6vw;
-      overflow: hidden;
-    }
-    .eyebrow, .mono {
-      font: 11px "DM Mono", monospace;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-    .eyebrow { color: #66705e; display: flex; align-items: center; gap: 10px; }
-    .eyebrow::before { content:""; width: 25px; height: 1px; background: #66705e; }
-    h1 {
-      font-size: clamp(52px, 7.4vw, 102px);
-      line-height: .96;
-      letter-spacing: -.085em;
-      margin: 24px 0;
-      max-width: 650px;
-    }
-    h1 em { font-style: normal; color: #769c37; }
-    .hero-copy { color: var(--muted); line-height: 1.8; max-width: 440px; font-size: 15px; }
-    .hero-actions { display: flex; align-items: center; gap: 22px; margin-top: 30px; }
-    .text-link { font-size: 12px; font-weight: 700; }
-    .text-link span { margin-left: 8px; }
-    .hero-note { margin-top: 48px; display: flex; gap: 14px; align-items: center; font-size: 11px; color: var(--muted); }
-    .avatars { display: flex; }
-    .avatar { width: 27px; height: 27px; display: grid; place-items: center; border: 2px solid var(--bg); border-radius: 50%; margin-left: -6px; background: #d7e3bb; font-size: 9px; }
-    .avatar:first-child { margin-left: 0; background: #efc7ab; }
-    .avatar:last-child { background: #c7d7ed; }
-
-    .hero-art {
-      min-height: 490px;
-      position: relative;
-      display: grid;
-      place-items: center;
-      perspective: 1000px;
-    }
-    .orb {
-      width: min(36vw, 450px);
-      aspect-ratio: 1;
-      border-radius: 50%;
-      position: absolute;
-      background:
-        radial-gradient(circle at 32% 28%, #faffef 0 4%, transparent 5%),
-        radial-gradient(circle at 32% 27%, #dcffa0 0, #a5d658 28%, #52702e 62%, #283622 100%);
-      box-shadow: inset -30px -28px 55px #172116a6, 0 35px 100px #66844743;
-      animation: float 6s ease-in-out infinite;
-    }
-    .orbit { position: absolute; width: min(46vw, 560px); aspect-ratio: 1; border: 1px solid #bbc7aa; border-radius: 50%; transform: rotateX(68deg) rotateZ(-24deg); }
-    .orbit::after { content:""; position:absolute; width: 11px; height:11px; border-radius:50%; background:var(--green); top: 10%; left: 17%; box-shadow:0 0 22px #b6ed65; }
-    .floating-card {
-      position: absolute;
-      padding: 15px 17px;
-      border-radius: 15px;
-      background: #fffefaee;
-      box-shadow: 0 14px 40px #18201817;
-      font-size: 11px;
-      animation: float 5s ease-in-out infinite;
-    }
-    .float-a { left: 2%; top: 18%; }
-    .float-b { right: 0; bottom: 16%; animation-delay: -2s; }
-    .floating-card strong { display:block; font-size: 15px; margin-top: 6px; }
-    @keyframes float { 50% { transform: translateY(-12px) rotateY(5deg); } }
-
-    .ticker {
-      background: var(--green);
-      overflow: hidden;
-      padding: 15px 0;
-      white-space: nowrap;
-      font: 11px "DM Mono", monospace;
-      text-transform: uppercase;
-    }
-    .ticker-track { display: inline-flex; gap: 28px; animation: ticker 28s linear infinite; }
-    @keyframes ticker { to { transform: translateX(-50%); } }
-
-    section { padding: 110px 6vw; }
-    .section-head { display:flex; align-items:end; justify-content:space-between; gap:30px; margin-bottom:46px; }
-    .section-head h2 { font-size: clamp(36px,5vw,62px); line-height:1; letter-spacing:-.07em; margin: 15px 0 0; }
-    .section-head p { max-width: 365px; color:var(--muted); line-height:1.8; font-size:13px; margin:0; }
-
-    .services { background: var(--dark); color: white; }
-    .services .eyebrow { color: #adca82; }
-    .services .eyebrow::before { background: #adca82; }
-    .service-grid { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid #3b423c; }
-    .service-card { padding:30px 23px 34px 0; border-right:1px solid #3b423c; min-height:220px; transition:background .25s,padding .25s; cursor:pointer; }
-    .service-card:not(:first-child) { padding-left:23px; }
-    .service-card:last-child { border-right:0; }
-    .service-card:hover { background:#1c241e; padding-top:24px; }
-    .service-num { font:11px "DM Mono",monospace; color:#9aa398; }
-    .service-card h3 { font-size:21px; letter-spacing:-.05em; margin:42px 0 10px; }
-    .service-card p { font-size:12px; line-height:1.7; color:#aeb4ad; max-width:220px; }
-    .service-arrow { float:right; font-size:18px; color:var(--green); }
-
-    .demo-section { background: #eeeee8; }
-    .demo-layout { display:grid; grid-template-columns: .78fr 1.5fr; gap:6vw; align-items:start; }
-    .demo-intro { position:sticky; top:110px; }
-    .demo-intro h2 { font-size:clamp(38px,5vw,64px); letter-spacing:-.08em; line-height:.98; margin:20px 0; }
-    .demo-intro p { font-size:13px; color:var(--muted); line-height:1.8; max-width:330px; }
-    .demo-tabs { display:flex; gap:8px; margin-top:26px; flex-wrap:wrap; }
-    .tab { border:1px solid #d3d5cd; background:transparent; border-radius:99px; padding:10px 14px; font-size:11px; color:#555b54; }
-    .tab.active { background:var(--ink); color:white; border-color:var(--ink); }
-    .workspace { border-radius:24px; background:#dedfd8; padding:16px; overflow:hidden; box-shadow:0 25px 70px #1b24161c; }
-    .workspace-top { display:flex; align-items:center; justify-content:space-between; padding:5px 5px 16px; font-size:10px; color:#666d63; }
-    .window-dots { display:flex; gap:5px; }
-    .window-dots i { width:7px; height:7px; border-radius:50%; background:#aeb4a9; }
-    .demo-stage { display:grid; grid-template-columns: minmax(225px,.78fr) 1.5fr; gap:14px; align-items:center; min-height:510px; }
-    .phone-wrap { display:grid; justify-items:center; transition:transform .4s; }
-    .phone {
-      width:224px; height:455px; background:#111; padding:8px; border-radius:34px; box-shadow:0 20px 42px #15181342;
-      transform:rotateY(-8deg) rotateX(2deg); transition:all .5s;
-    }
-    .phone-screen { height:100%; border-radius:27px; background:#fbfaf6; overflow:hidden; position:relative; }
-    .phone-notch { width:72px; height:17px; background:#111; border-radius:0 0 12px 12px; margin:0 auto; }
-    .menu-app { padding:6px 13px 15px; }
-    .menu-brand { display:flex; align-items:center; justify-content:space-between; font-weight:800; font-size:13px; margin:8px 0 13px; }
-    .menu-brand small { font-size:9px; color:#858a80; font-weight:500; }
-    .menu-banner { height:100px; border-radius:13px; background:linear-gradient(135deg,#384b34,#8ba163); color:white; padding:13px; display:flex; flex-direction:column; justify-content:end; font-size:12px; font-weight:800; }
-    .menu-banner span { font-size:9px; opacity:.8; font-weight:400; margin-top:3px; }
-    .menu-cats { display:flex; gap:7px; margin:12px 0; overflow:hidden; }
-    .menu-cats span { padding:6px 9px; border-radius:99px; background:#edf0e7; font-size:8px; white-space:nowrap; }
-    .menu-cats .selected { background:#263322; color:white; }
-    .food { display:flex; gap:9px; align-items:center; padding:8px 0; border-bottom:1px solid #e7e8e1; }
-    .food-pic { width:43px; height:43px; border-radius:10px; background:linear-gradient(140deg,#dfaa6a,#8d5334); display:grid; place-items:center; font-size:20px; }
-    .food:nth-child(2) .food-pic { background:linear-gradient(140deg,#b5cb80,#517244); }
-    .food:nth-child(3) .food-pic { background:linear-gradient(140deg,#f0cf91,#ad7045); }
-    .food-info { flex:1; font-size:9px; font-weight:800; }
-    .food-info small { display:block; font-size:8px; color:#868a81; font-weight:400; margin-top:3px; }
-    .food-price { font-size:9px; font-weight:800; }
-    .add { border:0; width:20px; height:20px; border-radius:50%; background:#d8f28e; font-weight:800; }
-    .cartbar { margin-top:10px; border-radius:10px; background:#243022; color:white; padding:9px; display:flex; justify-content:space-between; font-size:9px; }
-    .admin { background:#fff; border-radius:14px; min-height:430px; padding:19px; box-shadow:0 8px 24px #1b20150b; transition:all .35s; }
-    .admin-head { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:15px; }
-    .admin-title { font-size:13px; font-weight:800; }
-    .live { color:#448044; font:9px "DM Mono"; }
-    .admin-body { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:17px; }
-    .metric { border:1px solid #eee; border-radius:11px; padding:12px; }
-    .metric small { display:block; color:#888; font-size:9px; }
-    .metric strong { font-size:20px; display:block; margin-top:7px; letter-spacing:-.06em; }
-    .chart { grid-column:span 2; height:132px; border-radius:12px; padding:12px; background:#f7f8f4; }
-    .chart-label { font-size:9px; color:#888; }
-    .bars { height:85px; display:flex; align-items:end; gap:8px; padding-top:12px; }
-    .bars i { flex:1; border-radius:4px 4px 0 0; background:#bbdf77; min-height:13px; animation: grow .8s ease both; transform-origin:bottom; }
-    .bars i:nth-child(2n) { background:#d4e9ac; }
-    @keyframes grow { from { transform:scaleY(.2); } }
-    .orders { grid-column:span 2; font-size:9px; }
-    .order-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee; color:#60665d; }
-    .status { color:#477746; background:#edf5e3; border-radius:99px; padding:4px 7px; }
-
-    .devices { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; }
-    .device-card { border-radius:18px; padding:20px; background:#e8e9e2; min-height:320px; position:relative; overflow:hidden; }
-    .device-card h3 { margin:0; font-size:15px; }
-    .device-card p { color:var(--muted); font-size:11px; }
-    .device-mock { position:absolute; left:50%; bottom:-48px; transform:translateX(-50%); background:#191d1a; border:7px solid #191d1a; box-shadow:0 15px 30px #14181430; }
-    .device-screen { background:#fcfcf7; overflow:hidden; }
-    .mock-phone { width:102px; height:208px; border-radius:22px 22px 0 0; }
-    .mock-tablet { width:220px; height:143px; border-radius:12px 12px 0 0; }
-    .mock-desktop { width:270px; height:152px; border-radius:10px 10px 0 0; }
-    .mock-site { padding:12px; }
-    .mock-site b { font-size:10px; }
-    .mock-site div { height:8px; background:#e8eee0; border-radius:3px; margin:7px 0; }
-    .mock-site .wide { height:45px; background:linear-gradient(120deg,#d9efb0,#8aa961); }
-    .mock-site .half { width:55%; }
-
-    .process { background:var(--green); }
-    .process-row { border-top:1px solid #a8cc5b; display:grid; grid-template-columns:80px 1fr 1.1fr; padding:23px 0; gap:20px; align-items:center; }
-    .process-row:last-child { border-bottom:1px solid #a8cc5b; }
-    .process-row .mono { font-size:10px; }
-    .process-row h3 { margin:0; font-size:21px; letter-spacing:-.05em; }
-    .process-row p { margin:0; font-size:12px; color:#4f5d3d; line-height:1.7; }
-
-    .contact { background:var(--dark); color:white; display:grid; grid-template-columns:1fr 1fr; gap:8vw; align-items:center; }
-    .contact h2 { font-size:clamp(45px,6vw,80px); line-height:.96; letter-spacing:-.08em; margin:18px 0; }
-    .contact p { color:#aeb4ad; font-size:13px; line-height:1.8; max-width:390px; }
-    .contact .eyebrow { color:#adca82; }
-    .contact .eyebrow::before { background:#adca82; }
-    .contact-form { background:#1c241e; border:1px solid #354039; border-radius:18px; padding:25px; }
-    .contact-form label { display:block; margin-bottom:14px; color:#c7cec5; font-size:10px; }
-    .contact-form input { width:100%; margin-top:7px; padding:13px; border-radius:9px; border:1px solid #424b43; background:#131816; color:white; outline:none; }
-    .contact-form input:focus { border-color:var(--green); }
-    .contact-form .button { width:100%; margin-top:6px; background:var(--green); color:#172012; }
-    footer { background:var(--dark); color:#919990; border-top:1px solid #303a33; padding:22px 6vw; display:flex; justify-content:space-between; font-size:10px; }
-    footer strong { color:white; }
-
-    .chat-button { position:fixed; bottom:24px; right:24px; z-index:30; width:58px; height:58px; border:0; border-radius:50%; color:#172012; background:var(--green); font-size:22px; box-shadow:0 10px 28px #16200d3d; }
-    .chatbox { display:none; position:fixed; z-index:29; bottom:94px; right:24px; width:310px; background:white; border-radius:16px; overflow:hidden; box-shadow:0 18px 60px #10181036; }
-    .chatbox.open { display:block; animation: pop .25s ease both; }
-    @keyframes pop { from { opacity:0; transform:translateY(10px) scale(.97); } }
-    .chat-head { background:#1b241c; color:white; padding:16px; font-size:12px; font-weight:800; }
-    .chat-head small { display:block; color:#b9c4b5; font-size:9px; font-weight:400; margin-top:4px; }
-    .chat-body { min-height:160px; padding:14px; background:#f8f9f5; font-size:11px; }
-    .bubble { background:white; padding:10px; border-radius:4px 12px 12px 12px; max-width:85%; line-height:1.5; }
-    .chat-compose { display:flex; padding:9px; gap:6px; }
-    .chat-compose input { min-width:0; flex:1; border:1px solid #e1e4dc; border-radius:9px; padding:10px; font-size:10px; }
-    .chat-compose button { border:0; border-radius:9px; background:var(--green); padding:0 13px; }
-
-    @media(max-width:900px) {
-      .hero { grid-template-columns:1fr; padding-top:72px; }
-      .hero-art { min-height:450px; }
-      .orb { width:min(66vw,390px); }
-      .orbit { width:min(78vw,490px); }
-      .demo-layout { grid-template-columns:1fr; }
-      .demo-intro { position:static; }
-      .service-grid { grid-template-columns:repeat(2,1fr); }
-      .service-card:nth-child(2) { border-right:0; }
-      .service-card:nth-child(n+3) { border-top:1px solid #3b423c; }
-      .service-card:nth-child(3) { padding-left:0; }
-      .contact { grid-template-columns:1fr; }
-    }
-    @media(max-width:650px) {
-      .topbar { height:65px; padding:0 5vw; }
-      .brand img { width:122px; }
-      .menu-toggle { display:block; border:0; background:transparent; font-size:22px; }
-      .nav { display:none; position:absolute; top:64px; left:0; right:0; background:var(--bg); padding:22px 6vw; border-bottom:1px solid var(--line); flex-direction:column; align-items:flex-start; gap:20px; }
-      .nav.open { display:flex; }
-      .hero { padding:70px 6vw 45px; gap:0; }
-      h1 { font-size:58px; }
-      .hero-art { min-height:370px; }
-      .floating-card { font-size:9px; }
-      section { padding:75px 6vw; }
-      .section-head { display:block; }
-      .section-head p { margin-top:18px; }
-      .service-grid { grid-template-columns:1fr 1fr; }
-      .service-card { min-height:190px; padding:22px 12px 25px 0; }
-      .service-card:not(:first-child) { padding-left:12px; }
-      .service-card:nth-child(odd) { padding-left:0; }
-      .service-card h3 { font-size:17px; margin-top:35px; }
-      .demo-stage { grid-template-columns:1fr; padding:8px 0; }
-      .admin { min-height:0; }
-      .phone { width:210px; height:425px; }
-      .devices { grid-template-columns:1fr; }
-      .device-card { min-height:280px; }
-      .process-row { grid-template-columns:40px 1fr; }
-      .process-row p { grid-column:2; }
-      footer { gap:12px; flex-direction:column; }
-      .chatbox { right:14px; width:min(310px, calc(100vw - 28px)); }
-      .chat-button { right:16px; bottom:16px; }
-    }
-    @media(prefers-reduced-motion:reduce) {
-      *, *::before, *::after { animation-duration:.01ms !important; scroll-behavior:auto !important; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f4ec">
+<title>Web.Zi — Make your business move</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f5f4ec;--ink:#182019;--forest:#1e3024;--moss:#738b4c;--lime:#d7f17a;--line:#d7d8cc;--white:#fffef8;--muted:#73796e}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,Arial,sans-serif}
+button,a{font:inherit}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer}
+.wrap{width:min(1320px,90vw);margin:auto}
+.mono,.eyebrow{font:10px 'DM Mono',monospace;letter-spacing:.13em;text-transform:uppercase}
+.top{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;background:#f5f4ecee;backdrop-filter:blur(14px);padding:0 5vw}
+.logo{display:flex;align-items:center}
+.logo img{width:144px;height:auto}
+.nav{display:flex;align-items:center;gap:34px;font-size:12px}
+.nav a{color:#53594f}
+.nav a:hover{color:#111}
+.pill{border:0;border-radius:99px;padding:13px 19px;background:var(--forest);color:white;font-size:11px;font-weight:700;transition:.2s}
+.pill:hover{transform:translateY(-2px);background:#2b4432}
+.hamb{display:none;border:0;background:none;font-size:22px}
+.hero{min-height:660px;display:grid;grid-template-columns:.94fr 1.06fr;gap:5vw;align-items:center;padding:80px 0 75px}
+.eyebrow{display:flex;align-items:center;gap:10px;color:#637747}
+.eyebrow:before{content:'';height:1px;width:24px;background:currentColor}
+.hero h1{font-size:clamp(60px,8vw,112px);letter-spacing:-.09em;line-height:.88;margin:27px 0 22px;max-width:600px}
+.hero h1 i{color:#76934d;font-style:normal}
+.lede{font-size:14px;color:var(--muted);line-height:1.9;max-width:435px}
+.actions{display:flex;align-items:center;gap:22px;margin-top:29px}
+.simple{font-size:11px;font-weight:800}
+.simple span{margin-left:9px}
+.proof{display:flex;align-items:center;gap:14px;margin-top:46px;color:var(--muted);font-size:10px;line-height:1.6}
+.faces{display:flex}
+.faces b{display:grid;place-items:center;width:27px;height:27px;border:2px solid var(--paper);border-radius:50%;margin-left:-5px;background:#d5e1bd;color:#33422b;font-size:9px}
+.faces b:first-child{margin:0;background:#e8c4a6}
+.faces b:last-child{background:#c2d3e2}
+.scene{height:480px;position:relative;display:grid;place-items:center;perspective:1000px}
+.planet{position:absolute;width:min(35vw,435px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 29% 25%,#f3ffd5 0 2%,transparent 4%),radial-gradient(circle at 32% 25%,#e4ffad,#a3ca61 27%,#64823d 57%,#263323 100%);box-shadow:inset -32px -24px 55px #1a2714a8,0 35px 95px #53694142;animation:bob 6s ease-in-out infinite}
+.ring{position:absolute;width:min(45vw,550px);aspect-ratio:1;border:1px solid #b3bd9e;border-radius:50%;transform:rotateX(68deg) rotateZ(-25deg)}
+.ring:after{content:'';position:absolute;top:8%;left:18%;width:10px;height:10px;background:var(--lime);border-radius:50%;box-shadow:0 0 22px var(--lime)}
+.float{position:absolute;background:#fffef2e8;border:1px solid #fff;border-radius:13px;padding:13px 15px;box-shadow:0 15px 35px #1d28131c;font-size:9px;animation:bob 5s ease-in-out infinite}
+.float strong{display:block;font-size:14px;margin-top:6px}
+.float.a{left:0;top:18%}
+.float.b{right:0;bottom:15%;animation-delay:-2s}
+@keyframes bob{50%{transform:translateY(-11px) rotateY(5deg)}}
+.ticker{background:var(--lime);overflow:hidden;white-space:nowrap;padding:14px 0;font:10px 'DM Mono',monospace;text-transform:uppercase}
+.ticker span{display:inline-block;animation:marquee 26s linear infinite}
+.ticker i{font-style:normal;margin:0 25px}
+@keyframes marquee{to{transform:translateX(-50%)}}
+section{padding:105px 0}
+.head{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:42px}
+.head h2{font-size:clamp(39px,5.8vw,72px);letter-spacing:-.085em;line-height:.94;margin:16px 0 0}
+.head p{max-width:370px;color:var(--muted);font-size:12px;line-height:1.9;margin:0}
+.services{background:var(--forest);color:white}
+.services .eyebrow,.contact .eyebrow{color:#bed38e}
+.service-grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #53614f}
+.service{padding:25px 18px 30px 0;border-right:1px solid #53614f;min-height:205px;transition:.25s}
+.service:not(:first-child){padding-left:18px}
+.service:last-child{border:0}
+.service:hover{background:#26392b;transform:translateY(-3px)}
+.service .mono{color:#a9b4a2;font-size:9px}
+.service h3{font-size:19px;letter-spacing:-.05em;margin:43px 0 8px}
+.service p{font-size:11px;line-height:1.8;color:#c1c9bc;max-width:220px}
+.service em{float:right;color:var(--lime);font-style:normal}
+.showcase{background:#eeeee6}
+.showcase-grid{display:grid;grid-template-columns:.68fr 1.45fr;gap:5vw}
+.showcopy{position:sticky;top:115px;align-self:start}
+.showcopy h2{font-size:clamp(41px,5.6vw,72px);letter-spacing:-.09em;line-height:.91;margin:20px 0}
+.showcopy p{color:var(--muted);font-size:12px;line-height:1.9;max-width:310px}
+.tabs{display:flex;flex-wrap:wrap;gap:7px;margin-top:24px}
+.tab{border:1px solid #d0d2c6;border-radius:30px;background:transparent;padding:9px 12px;font-size:10px;color:#535a50}
+.tab.active{background:var(--forest);border-color:var(--forest);color:white}
+.stage{background:#dedfd7;border-radius:22px;padding:14px;box-shadow:0 25px 65px #18231520}
+.bar{display:flex;justify-content:space-between;align-items:center;padding:3px 4px 13px;color:#777d70;font-size:9px}
+.dots{display:flex;gap:5px}
+.dots i{width:7px;height:7px;border-radius:50%;background:#aab0a2}
+.screens{display:grid;grid-template-columns:.75fr 1.4fr;gap:13px;align-items:center;min-height:495px}
+.phone-wrap{display:grid;place-items:center}
+.phone{width:209px;height:432px;padding:7px;border-radius:34px;background:#101411;box-shadow:0 22px 42px #13181348;transform:rotateY(-8deg)}
+.pscreen{height:100%;border-radius:27px;background:#fffef9;overflow:hidden}
+.notch{width:69px;height:15px;background:#101411;border-radius:0 0 11px 11px;margin:auto}
+.menu{padding:5px 12px}
+.menutop{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;margin:7px 0 12px}
+.menutop small{font-size:8px;color:#8a8e83;font-weight:500}
+.banner{height:92px;border-radius:12px;background:linear-gradient(135deg,#354d35,#92a967);color:white;padding:12px;display:flex;flex-direction:column;justify-content:end;font-size:13px;font-weight:800}
+.banner small{font-size:8px;font-weight:400;opacity:.8;margin-top:3px}
+.cats{display:flex;gap:6px;margin:10px 0;overflow:hidden}
+.cats span{font-size:7px;white-space:nowrap;border-radius:20px;padding:6px 8px;background:#eef0e8}
+.cats .sel{background:#283525;color:white}
+.dish{display:flex;align-items:center;gap:7px;padding:8px 0;border-bottom:1px solid #ecece5}
+.foodpic{height:39px;width:39px;display:grid;place-items:center;border-radius:10px;background:linear-gradient(140deg,#dfaa69,#885334);font-size:18px}
+.dish:nth-of-type(3) .foodpic{background:linear-gradient(140deg,#b6cc82,#517346)}
+.dish:nth-of-type(4) .foodpic{background:linear-gradient(140deg,#f0cf91,#ad7045)}
+.dishname{flex:1;font-size:8px;font-weight:800}
+.dishname small{display:block;color:#888c82;font-size:7px;font-weight:400;margin-top:3px}
+.price{font-size:8px;font-weight:800}
+.add{border:0;border-radius:50%;width:19px;height:19px;background:#d9ef9e;font-weight:800;font-size:13px}
+.cart{background:#253324;color:white;border-radius:9px;padding:8px;margin-top:9px;display:flex;justify-content:space-between;font-size:8px}
+.dashboard{background:#fffefa;border-radius:13px;min-height:410px;padding:17px;transition:.3s}
+.dashhead{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding-bottom:13px;font-size:11px;font-weight:800}
+.live{font:9px 'DM Mono';color:#558451}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}
+.stat{border:1px solid #ecece6;border-radius:9px;padding:10px}
+.stat small{font-size:8px;color:#8a8e85}
+.stat b{display:block;font-size:18px;letter-spacing:-.06em;margin-top:5px}
+.chart{background:#f7f8f3;border-radius:10px;padding:10px;height:119px}
+.chart small{font-size:8px;color:#858a80}
+.bars{height:77px;display:flex;align-items:end;gap:6px;padding-top:10px}
+.bars i{flex:1;background:#bcd77f;border-radius:3px 3px 0 0;min-height:12px;animation:rise .7s ease both}
+.bars i:nth-child(even){background:#d4e5b2}
+@keyframes rise{from{transform:scaleY(.1);transform-origin:bottom}}
+.orders{font-size:8px;margin-top:13px}
+.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eee;color:#62695f}
+.badge{background:#edf4e4;border-radius:30px;color:#507345;padding:4px 7px}
+.devices{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.device{height:300px;background:#e9eae3;border-radius:16px;padding:18px;position:relative;overflow:hidden}
+.device h3{font-size:14px;margin:0}
+.device p{font-size:10px;color:var(--muted)}
+.mock{position:absolute;left:50%;bottom:-48px;transform:translateX(-50%);background:#171b18;border:7px solid #171b18;box-shadow:0 14px 30px #10150f35}
+.mock .content{height:100%;background:#fffef8;padding:10px;overflow:hidden}
+.mock b{font-size:8px}
+.mock div{height:8px;border-radius:3px;background:#e8eee0;margin:7px 0}
+.mock .heroimg{height:43px;background:linear-gradient(120deg,#e0f2bd,#8da766)}
+.mphone{width:91px;height:188px;border-radius:22px 22px 0 0}
+.mtablet{width:200px;height:134px;border-radius:12px 12px 0 0}
+.mdesktop{width:250px;height:145px;border-radius:10px 10px 0 0}
+.process{background:var(--lime)}
+.process .eyebrow{color:#4d6335}
+.step{display:grid;grid-template-columns:65px 1fr 1fr;gap:18px;align-items:center;padding:22px 0;border-top:1px solid #afc76e}
+.step:last-child{border-bottom:1px solid #afc76e}
+.step h3{font-size:19px;letter-spacing:-.05em;margin:0}
+.step p{font-size:11px;line-height:1.8;color:#4f5d3d;margin:0}
+.contact{background:var(--forest);color:white;display:grid;grid-template-columns:1fr .85fr;gap:8vw;align-items:center}
+.contact h2{font-size:clamp(52px,7vw,88px);letter-spacing:-.09em;line-height:.9;margin:18px 0}
+.contact p{font-size:12px;line-height:1.8;color:#bdc7b9;max-width:390px}
+.form{padding:23px;border:1px solid #52604e;background:#26382a;border-radius:15px}
+.form label{display:block;font-size:9px;color:#d0d6ca;margin-bottom:12px}
+.form input{display:block;width:100%;margin-top:6px;padding:12px;border-radius:8px;border:1px solid #52604e;background:#1b2a20;color:white;outline:none;font:11px Manrope}
+.form input:focus{border-color:var(--lime)}
+.form button{width:100%;margin-top:3px;background:var(--lime);color:#192317}
+.formmsg{font-size:9px;margin:11px 0 0}
+.foot{background:var(--forest);color:#bdc7b9;padding:20px 5vw;border-top:1px solid #52604e;display:flex;justify-content:space-between;font-size:9px}
+.foot strong{color:white}
+.chat-launch{position:fixed;z-index:20;bottom:22px;right:22px;width:54px;height:54px;border:0;border-radius:50%;background:var(--lime);color:#182019;font-size:21px;box-shadow:0 9px 25px #10180f35}
+.chat{display:none;position:fixed;z-index:19;bottom:88px;right:22px;width:min(315px,calc(100vw - 30px));background:white;border-radius:15px;overflow:hidden;box-shadow:0 20px 60px #111a1245}
+.chat.open{display:block;animation:appear .2s ease}
+@keyframes appear{from{opacity:0;transform:translateY(10px)}}
+.chathead{padding:14px;background:var(--forest);color:white;font-weight:800;font-size:11px}
+.chathead small{display:block;color:#c7d1c1;font-size:8px;font-weight:400;margin-top:4px}
+.chatbody{height:160px;padding:13px;background:#f7f8f3;font-size:10px;overflow:auto}
+.bubble{padding:9px;background:white;border-radius:3px 10px 10px;max-width:88%;line-height:1.6}
+.chatform{display:flex;gap:6px;padding:8px}
+.chatform input{flex:1;min-width:0;padding:9px;border:1px solid #e2e4dd;border-radius:8px;font-size:10px}
+.chatform button{border:0;border-radius:8px;background:var(--lime);padding:0 13px}
+@media(max-width:900px){
+.hero{grid-template-columns:1fr}.scene{height:410px}.planet{width:min(58vw,390px)}.ring{width:min(72vw,490px)}
+.showcase-grid{grid-template-columns:1fr}.showcopy{position:static}
+.service-grid{grid-template-columns:1fr 1fr}.service:nth-child(2){border-right:0}
+.service:nth-child(n+3){border-top:1px solid #53614f}.service:nth-child(3){padding-left:0}
+.contact{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+.top{height:66px;padding:0 5vw}.logo img{width:122px}.hamb{display:block}
+.nav{display:none;position:absolute;top:65px;left:0;right:0;background:var(--paper);padding:20px 6vw;flex-direction:column;align-items:flex-start;gap:18px;border-bottom:1px solid var(--line)}
+.nav.open{display:flex}.hero{padding:61px 0 44px;gap:0}.hero h1{font-size:60px}
+.scene{height:340px}.planet{width:min(70vw,320px)}.ring{width:min(82vw,380px)}
+.float{font-size:8px;padding:10px}.float strong{font-size:11px}
+.wrap{width:88vw}section{padding:73px 0}
+.head{display:block}.head p{margin-top:18px}
+.service{padding:20px 10px 22px 0;min-height:190px}.service:not(:first-child){padding-left:10px}.service:nth-child(odd){padding-left:0}.service h3{font-size:16px;margin-top:32px}
+.screens{grid-template-columns:1fr;padding:8px 0}.phone{width:202px;height:417px}.dashboard{min-height:0}
+.devices{grid-template-columns:1fr}.device{height:260px}
+.step{grid-template-columns:38px 1fr}.step p{grid-column:2}
+.foot{flex-direction:column;gap:8px}
+}
+@media(prefers-reduced-motion:reduce){
+*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#home" aria-label="Web.Zi home"><img src="webzi-logo.png" alt="Web.Zi" /></a>
-    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
-    <nav class="nav" id="nav">
-      <a href="#services">Services</a>
-      <a href="#demo">Live demo</a>
-      <a href="#devices">Websites</a>
-      <a href="#process">How we work</a>
-      <a class="nav-cta" href="#contact">Start a project ↗</a>
-    </nav>
-  </header>
+<header class="top">
+  <a class="logo" href="#home"><img src="webzi-logo.png" alt="Web.Zi"></a>
+  <button class="hamb" id="hamb" aria-label="Open navigation">☰</button>
+  <nav class="nav" id="nav">
+    <a href="#services">Services</a>
+    <a href="#showcase">Live demo</a>
+    <a href="#devices">Responsive design</a>
+    <a href="#process">Our process</a>
+    <a class="pill" href="#contact">Let’s talk ↗</a>
+  </nav>
+</header>
 
-  <main>
-    <section class="hero" id="home">
-      <div>
-        <div class="eyebrow">Digital studio · Cairo & everywhere</div>
-        <h1>Make your<br />business <em>move.</em></h1>
-        <p class="hero-copy">Websites, smart menus, and powerful cashier systems built to make everyday business feel effortless.</p>
-        <div class="hero-actions">
-          <a class="button" href="#demo">Explore the experience ↗</a>
-          <a class="text-link" href="#services">What we build <span>↓</span></a>
-        </div>
-        <div class="hero-note">
-          <div class="avatars"><span class="avatar">W</span><span class="avatar">Z</span><span class="avatar">+</span></div>
-          <span>Thoughtful design. Useful technology.<br />Made around your business.</span>
-        </div>
+<main>
+<div class="wrap">
+  <section class="hero" id="home">
+    <div>
+      <div class="eyebrow">Independent digital studio · Egypt</div>
+      <h1>Business,<br>beautifully<br><i>in motion.</i></h1>
+      <p class="lede">We build the digital tools behind good businesses: memorable websites, effortless menus, and cashier systems your team can count on.</p>
+      <div class="actions">
+        <a class="pill" href="#showcase">Explore the experience ↗</a>
+        <a class="simple" href="#services">What we make <span>↓</span></a>
       </div>
-      <div class="hero-art" aria-label="Floating Web.Zi visual">
-        <div class="orbit"></div><div class="orb"></div>
-        <div class="floating-card float-a"><span class="mono">Today’s sales</span><strong>EGP 18,450 <span style="color:#669638">↗ 18%</span></strong></div>
-        <div class="floating-card float-b"><span class="mono">Your next idea</span><strong>Ready to launch ✦</strong></div>
+      <div class="proof">
+        <div class="faces"><b>W</b><b>Z</b><b>✳</b></div>
+        <span>One thoughtful team for your<br>brand, your customers and your operations.</span>
       </div>
-    </section>
+    </div>
+    <div class="scene">
+      <div class="ring"></div><div class="planet"></div>
+      <div class="float a"><span class="mono">A better kind of busy</span><strong>Order received <span style="color:#6e9845">↗</span></strong></div>
+      <div class="float b"><span class="mono">Built for real life</span><strong>Ready when you are ✦</strong></div>
+    </div>
+  </section>
+</div>
 
-    <div class="ticker"><div class="ticker-track">
-      <span>Websites that work</span>✳ <span>Smart digital menus</span>✳ <span>Cashier systems</span>✳ <span>Built around you</span>✳
-      <span>Websites that work</span>✳ <span>Smart digital menus</span>✳ <span>Cashier systems</span>✳ <span>Built around you</span>✳
-    </div></div>
+<div class="ticker"><span>Thoughtful websites<i>✳</i>Digital menus<i>✳</i>Cashier systems<i>✳</i>Set up with care<i>✳</i>Thoughtful websites<i>✳</i>Digital menus<i>✳</i>Cashier systems<i>✳</i>Set up with care<i>✳</i></span></div>
 
-    <section class="services" id="services">
-      <div class="section-head">
-        <div><div class="eyebrow">What we do</div><h2>One partner.<br />Every digital layer.</h2></div>
-        <p>From your first online impression to the tools your team uses every day, we bring the pieces together.</p>
-      </div>
-      <div class="service-grid">
-        <article class="service-card" onclick="showDemo('menu')"><span class="service-num">01 / WEB</span><span class="service-arrow">↗</span><h3>Websites & portfolios</h3><p>Distinctive, responsive websites that turn a first visit into a real connection.</p></article>
-        <article class="service-card" onclick="showDemo('menu')"><span class="service-num">02 / MENU</span><span class="service-arrow">↗</span><h3>Smart web menus</h3><p>A smooth mobile menu, ordering flow, and simple controls for your team.</p></article>
-        <article class="service-card" onclick="showDemo('menu')"><span class="service-num">03 / POS</span><span class="service-arrow">↗</span><h3>Cashier systems</h3><p>Modern point of sale tools, setup, and support built for the pace of service.</p></article>
-        <article class="service-card" onclick="showDemo('menu')"><span class="service-num">04 / CARE</span><span class="service-arrow">↗</span><h3>Setup & support</h3><p>Practical guidance from planning and installation through your next stage.</p></article>
-      </div>
-    </section>
-
-    <section class="demo-section" id="demo">
-      <div class="demo-layout">
-        <div class="demo-intro">
-          <div class="eyebrow">A closer look</div>
-          <h2>Your menu.<br />In motion.</h2>
-          <p>See what it feels like when the customer experience and your live business tools work side by side.</p>
-          <div class="demo-tabs">
-            <button class="tab active" data-demo="menu">Digital menu</button>
-            <button class="tab" data-demo="website">Website</button>
-            <button class="tab" data-demo="pos">Cashier</button>
-          </div>
-          <p class="mono" style="margin-top:24px;font-size:9px">INTERACTIVE CONCEPT · SAMPLE DATA</p>
-        </div>
-
-        <div class="workspace">
-          <div class="workspace-top"><span class="window-dots"><i></i><i></i><i></i></span><span>webzi.studio / preview</span><span>↗ Share preview</span></div>
-          <div class="demo-stage">
-            <div class="phone-wrap">
-              <div class="phone">
-                <div class="phone-screen">
-                  <div class="phone-notch"></div>
-                  <div class="menu-app">
-                    <div class="menu-brand"><span id="restaurantName">olive & ember</span><small>EN ▾</small></div>
-                    <div class="menu-banner" id="menuBanner">Good food,<br />good mood.<span>Fresh from our kitchen today</span></div>
-                    <div class="menu-cats"><span class="selected">Popular</span><span>Bowls</span><span>Drinks</span></div>
-                    <div class="food"><div class="food-pic">🥗</div><div class="food-info">Green goddess bowl<small>Avocado · quinoa · herbs</small></div><span class="food-price">EGP 185</span><button class="add" onclick="addToCart()">+</button></div>
-                    <div class="food"><div class="food-pic">🍔</div><div class="food-info">Smash burger<small>Cheddar · house sauce</small></div><span class="food-price">EGP 220</span><button class="add" onclick="addToCart()">+</button></div>
-                    <div class="food"><div class="food-pic">🍰</div><div class="food-info">Pistachio cake<small>Made fresh every morning</small></div><span class="food-price">EGP 125</span><button class="add" onclick="addToCart()">+</button></div>
-                    <div class="cartbar"><span id="cartText">Your order · 0 items</span><b id="cartTotal">EGP 0</b></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="admin" id="admin">
-              <div class="admin-head"><div class="admin-title" id="adminTitle">Olive & Ember · Live overview</div><span class="live">● LIVE</span></div>
-              <div class="admin-body">
-                <div class="metric"><small>Today’s sales</small><strong id="salesValue">EGP 18,450</strong></div>
-                <div class="metric"><small>Orders today</small><strong id="ordersValue">68 <span style="font-size:10px;color:#6c9a42">+12%</span></strong></div>
-                <div class="chart"><span class="chart-label">Sales this week · EGP</span><div class="bars"><i style="height:35%"></i><i style="height:56%"></i><i style="height:43%"></i><i style="height:72%"></i><i style="height:61%"></i><i style="height:88%"></i><i style="height:69%"></i><i style="height:100%"></i><i style="height:78%"></i><i style="height:91%"></i></div></div>
-                <div class="orders"><b>Recent activity</b>
-                  <div class="order-row"><span>#1048 · A. Hassan</span><span class="status">Preparing</span><b>EGP 405</b></div>
-                  <div class="order-row"><span>#1047 · M. Ali</span><span class="status">Ready</span><b>EGP 220</b></div>
-                  <div class="order-row"><span>#1046 · S. Omar</span><span class="status">Completed</span><b>EGP 310</b></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="devices">
-      <div class="section-head">
-        <div><div class="eyebrow">Looks right everywhere</div><h2>One idea.<br />Every screen.</h2></div>
-        <p>Your customers can browse on the go, explore on a tablet, or meet your brand on a full desktop screen.</p>
-      </div>
-      <div class="devices">
-        <article class="device-card"><h3>Mobile first</h3><p>Easy to use on the move.</p><div class="device-mock mock-phone"><div class="device-screen mock-site"><b>webzi.</b><div class="wide"></div><div></div><div class="half"></div></div></div></article>
-        <article class="device-card"><h3>Tablet ready</h3><p>Room to explore every detail.</p><div class="device-mock mock-tablet"><div class="device-screen mock-site"><b>olive & ember</b><div class="wide"></div><div></div><div></div></div></div></article>
-        <article class="device-card"><h3>Made for desktop</h3><p>A bigger view of your business.</p><div class="device-mock mock-desktop"><div class="device-screen mock-site"><b>WEB.ZI — DIGITAL STUDIO</b><div class="wide"></div><div class="half"></div><div></div></div></div></article>
-      </div>
-    </section>
-
-    <section class="process" id="process">
-      <div class="section-head">
-        <div><div class="eyebrow">Good things, made together</div><h2>From first thought<br />to everyday use.</h2></div>
-        <p>A clear process keeps the project focused and makes the handoff feel simple.</p>
-      </div>
-      <div class="process-row"><span class="mono">01</span><h3>We get to know your business</h3><p>We learn what you do, who you serve, and what would make work easier.</p></div>
-      <div class="process-row"><span class="mono">02</span><h3>We design the right experience</h3><p>We plan the screens and tools around the way your customers and team work.</p></div>
-      <div class="process-row"><span class="mono">03</span><h3>We build, launch & support</h3><p>We bring it to life, help you get set up, and stay available as you grow.</p></div>
-    </section>
-
-    <section class="contact" id="contact">
-      <div><div class="eyebrow">Have a project in mind?</div><h2>Let’s make<br />it happen.</h2><p>Tell us a little about your business and we’ll get back to you to talk through the next step.</p></div>
-      <form class="contact-form" onsubmit="submitContact(event)">
-        <label>Your name<input required placeholder="e.g. Nour Hassan" /></label>
-        <label>Business email or phone<input required placeholder="Where can we reach you?" /></label>
-        <label>What are you looking to build?<input placeholder="Website, menu, cashier system..." /></label>
-        <button class="button" type="submit">Start a conversation ↗</button>
-        <p id="formMessage" style="font-size:10px;margin:12px 0 0;color:#b9c4b5"></p>
-      </form>
-    </section>
-  </main>
-
-  <footer><span>© 2026 <strong>Web.Zi</strong> · Digital, made useful.</span><span>Cairo, Egypt · Built around your business ✳</span></footer>
-
-  <div class="chatbox" id="chatbox">
-    <div class="chat-head">Chat with Web.Zi <small>We’re here to help with your project</small></div>
-    <div class="chat-body"><div class="bubble">Hi there! 👋 What would you like to build for your business?</div><div id="chatMessages"></div></div>
-    <form class="chat-compose" onsubmit="sendChat(event)"><input id="chatInput" placeholder="Write a message..." /><button aria-label="Send">↑</button></form>
+<section class="services" id="services">
+<div class="wrap">
+  <div class="head">
+    <div><div class="eyebrow">What we make</div><h2>All the right pieces.<br>One clear picture.</h2></div>
+    <p>We connect your brand, the way your customers experience it, and the tools your team relies on behind the scenes.</p>
   </div>
-  <button class="chat-button" id="chatButton" aria-label="Open chat">✳</button>
+  <div class="service-grid">
+    <article class="service"><span class="mono">01 · ONLINE PRESENCE</span><em>↗</em><h3>Websites & portfolios</h3><p>Distinctive, responsive websites that make a strong first impression feel natural.</p></article>
+    <article class="service"><span class="mono">02 · CUSTOMER EXPERIENCE</span><em>↗</em><h3>Smart web menus</h3><p>A beautiful menu, easy ordering, and real-time visibility for your team.</p></article>
+    <article class="service"><span class="mono">03 · DAILY OPERATIONS</span><em>↗</em><h3>Cashier systems</h3><p>Modern point of sale tools, carefully set up around how your business runs.</p></article>
+    <article class="service"><span class="mono">04 · HERE TO HELP</span><em>↗</em><h3>Setup & support</h3><p>Guidance through launch, installation, and the next steps as you grow.</p></article>
+  </div>
+</div>
+</section>
 
-  <script>
-    let cartCount = 0;
-    let cartTotal = 0;
+<section class="showcase" id="showcase">
+<div class="wrap showcase-grid">
+  <div class="showcopy">
+    <div class="eyebrow">Step into the experience</div>
+    <h2>One tap.<br>Everything<br>in sync.</h2>
+    <p>On the customer’s phone: an inviting, easy menu. Beside it: the team’s live view of orders and sales. This is what connected can feel like.</p>
+    <div class="tabs">
+      <button class="tab active" data-mode="menu">Digital menu</button>
+      <button class="tab" data-mode="website">Website</button>
+      <button class="tab" data-mode="pos">Cashier system</button>
+    </div>
+    <p class="mono" style="font-size:8px;margin-top:21px">INTERACTIVE CONCEPT · SAMPLE BUSINESS DATA</p>
+  </div>
+  <div class="stage">
+    <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span>webzi.studio / experience</span><span>Preview ↗</span></div>
+    <div class="screens">
+      <div class="phone-wrap">
+        <div class="phone"><div class="pscreen"><div class="notch"></div>
+          <div class="menu">
+            <div class="menutop"><span id="brand">olive & ember</span><small>EN⌄</small></div>
+            <div class="banner" id="banner">Good food,<br>good mood.<small>Fresh from our kitchen today</small></div>
+            <div class="cats"><span class="sel">Popular</span><span>Bowls</span><span>Drinks</span><span>Sweets</span></div>
+            <div class="dish"><span class="foodpic">🥗</span><span class="dishname">Green goddess bowl<small>Avocado · quinoa · herbs</small></span><span class="price">185</span><button class="add" data-price="185">+</button></div>
+            <div class="dish"><span class="foodpic">🍔</span><span class="dishname">Smash burger<small>Cheddar · house sauce</small></span><span class="price">220</span><button class="add" data-price="220">+</button></div>
+            <div class="dish"><span class="foodpic">🍰</span><span class="dishname">Pistachio cake<small>Fresh every morning</small></span><span class="price">125</span><button class="add" data-price="125">+</button></div>
+            <div class="cart"><span id="cartcount">Your order · 0 items</span><b id="cartvalue">EGP 0</b></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="dashboard" id="dashboard">
+        <div class="dashhead"><span id="dashTitle">Olive & Ember · Live overview</span><span class="live">● LIVE</span></div>
+        <div class="stats">
+          <div class="stat"><small id="statLabel">Today’s sales</small><b id="sales">EGP 18,450</b></div>
+          <div class="stat"><small>Orders today</small><b id="orderNum">68 <span style="color:#719443;font-size:9px">+12%</span></b></div>
+        </div>
+        <div class="chart"><small id="chartTitle">Sales this week · EGP</small><div class="bars"><i style="height:35%"></i><i style="height:56%"></i><i style="height:43%"></i><i style="height:73%"></i><i style="height:61%"></i><i style="height:88%"></i><i style="height:69%"></i><i style="height:100%"></i><i style="height:79%"></i><i style="height:91%"></i></div></div>
+        <div class="orders"><b>Recent activity</b><div class="row"><span>#1048 · A. Hassan</span><span class="badge">Preparing</span><b>405</b></div><div class="row"><span>#1047 · M. Ali</span><span class="badge">Ready</span><b>220</b></div><div class="row"><span>#1046 · S. Omar</span><span class="badge">Completed</span><b>310</b></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
 
-    document.getElementById("menuToggle").addEventListener("click", () => {
-      document.getElementById("nav").classList.toggle("open");
-    });
-    document.querySelectorAll(".nav a").forEach(link => link.addEventListener("click", () => {
-      document.getElementById("nav").classList.remove("open");
-    }));
+<section id="devices">
+<div class="wrap">
+  <div class="head">
+    <div><div class="eyebrow">Considered on every screen</div><h2>Made to feel right<br>wherever you are.</h2></div>
+    <p>A phone in your pocket, a tablet on the counter, a desktop at the office. Your digital experience adapts beautifully.</p>
+  </div>
+  <div class="devices">
+    <article class="device"><h3>Mobile</h3><p>Simple, clear, right at hand.</p><div class="mock mphone"><div class="content"><b>webzi.</b><div class="heroimg"></div><div></div><div style="width:65%"></div></div></div></article>
+    <article class="device"><h3>Tablet</h3><p>More room to browse and choose.</p><div class="mock mtablet"><div class="content"><b>olive & ember</b><div class="heroimg"></div><div></div><div></div></div></div></article>
+    <article class="device"><h3>Desktop</h3><p>Your brand, in full view.</p><div class="mock mdesktop"><div class="content"><b>WEB.ZI · DIGITAL STUDIO</b><div class="heroimg"></div><div style="width:55%"></div><div></div></div></div></article>
+  </div>
+</div>
+</section>
 
-    function addToCart() {
-      cartCount++;
-      cartTotal += [185, 220, 125][(cartCount - 1) % 3];
-      document.getElementById("cartText").textContent = `Your order · ${cartCount} item${cartCount === 1 ? "" : "s"}`;
-      document.getElementById("cartTotal").textContent = `EGP ${cartTotal}`;
-      document.getElementById("ordersValue").innerHTML = `${68 + cartCount} <span style="font-size:10px;color:#6c9a42">+12%</span>`;
-    }
+<section class="process" id="process">
+<div class="wrap">
+  <div class="head">
+    <div><div class="eyebrow">A clear way forward</div><h2>From the first idea<br>to the everyday.</h2></div>
+    <p>Good work begins with listening. Then we make a plan that feels clear, useful, and right for your business.</p>
+  </div>
+  <div class="step"><span class="mono">01</span><h3>We learn how you work</h3><p>Your business, your customers, your goals. We start by understanding the real picture.</p></div>
+  <div class="step"><span class="mono">02</span><h3>We shape the experience</h3><p>We map out the screens and systems your customers and your team will actually use.</p></div>
+  <div class="step"><span class="mono">03</span><h3>We build and set you up</h3><p>We launch together, help your team get comfortable, and stay close as you grow.</p></div>
+</div>
+</section>
 
-    function showDemo(type) {
-      document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.dataset.demo === type));
-      const title = document.getElementById("adminTitle");
-      const name = document.getElementById("restaurantName");
-      const banner = document.getElementById("menuBanner");
-      const sales = document.getElementById("salesValue");
-      if (type === "website") {
-        title.textContent = "Web.Zi · Website analytics";
-        name.textContent = "webzi studio";
-        banner.innerHTML = "Ideas made<br />digital.<span>Websites designed around you</span>";
-        sales.textContent = "2,480 visits";
-      } else if (type === "pos") {
-        title.textContent = "Olive & Ember · Cashier";
-        name.textContent = "olive & ember";
-        banner.innerHTML = "Good food,<br />good mood.<span>Fresh from our kitchen today</span>";
-        sales.textContent = "EGP 18,450";
-      } else {
-        title.textContent = "Olive & Ember · Live overview";
-        name.textContent = "olive & ember";
-        banner.innerHTML = "Good food,<br />good mood.<span>Fresh from our kitchen today</span>";
-        sales.textContent = "EGP 18,450";
-      }
-      document.getElementById("demo").scrollIntoView({behavior:"smooth", block:"start"});
-    }
-    document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => showDemo(tab.dataset.demo)));
+<section class="contact" id="contact">
+<div><div class="eyebrow">Tell us what you’re imagining</div><h2>Let’s make<br>it real.</h2><p>Share a little about your business and what you need. We’ll get in touch to explore what could work.</p></div>
+<form class="form" id="leadform">
+  <label>Your name<input required placeholder="Your name"></label>
+  <label>Email or phone<input required placeholder="How can we reach you?"></label>
+  <label>What are you looking for?<input placeholder="A website, a menu, a cashier system…"></label>
+  <button class="pill" type="submit">Start a conversation ↗</button>
+  <p id="formmsg" class="formmsg"></p>
+</form>
+</section>
+</main>
+<footer class="foot"><span>© 2026 <strong>Web.Zi</strong> · Digital experiences, thoughtfully made.</span><span>Egypt · Made around your business ✳</span></footer>
 
-    document.getElementById("chatButton").addEventListener("click", () => {
-      document.getElementById("chatbox").classList.toggle("open");
-    });
-    function sendChat(event) {
-      event.preventDefault();
-      const input = document.getElementById("chatInput");
-      const text = input.value.trim();
-      if (!text) return;
-      const message = document.createElement("div");
-      message.textContent = text;
-      message.style.cssText = "margin:10px 0 0 auto;padding:9px 10px;border-radius:12px 4px 12px 12px;background:#dff2bd;width:fit-content;max-width:90%;";
-      document.getElementById("chatMessages").appendChild(message);
-      input.value = "";
-    }
-    function submitContact(event) {
-      event.preventDefault();
-      document.getElementById("formMessage").textContent = "Thanks — your message is ready. Connect a form service to receive real submissions.";
-    }
-  </script>
+<div class="chat" id="chat">
+  <div class="chathead">Talk to Web.Zi<small>Tell us what you’re working on</small></div>
+  <div class="chatbody" id="chatbody"><div class="bubble">Hi there! 👋 What would you like to build for your business?</div></div>
+  <form class="chatform" id="chatform"><input id="chatinput" placeholder="Write a message…"><button aria-label="Send">↑</button></form>
+</div>
+<button class="chat-launch" id="chatlaunch" aria-label="Open chat">✳</button>
+
+<script>
+let count=0,total=0;
+document.querySelectorAll('.add').forEach(button=>button.addEventListener('click',()=>{
+  count++;
+  total+=Number(button.dataset.price);
+  document.getElementById('cartcount').textContent=`Your order · ${count} item${count===1?'':'s'}`;
+  document.getElementById('cartvalue').textContent=`EGP ${total.toLocaleString()}`;
+  document.getElementById('orderNum').innerHTML=`${68+count} <span style="color:#719443;font-size:9px">+12%</span>`;
+}));
+
+const modes={
+  menu:{title:'Olive & Ember · Live overview',brand:'olive & ember',banner:'Good food,<br>good mood.',sub:'Fresh from our kitchen today',label:'Today’s sales',sales:'EGP 18,450',chart:'Sales this week · EGP'},
+  website:{title:'Web.Zi · Website insights',brand:'webzi studio',banner:'Ideas made<br>digital.',sub:'Websites made around you',label:'Visits this month',sales:'2,480',chart:'Visitors this week'},
+  pos:{title:'Olive & Ember · Cashier',brand:'olive & ember',banner:'Good food,<br>good mood.',sub:'Fresh from our kitchen today',label:'Today’s sales',sales:'EGP 18,450',chart:'Transactions this week'}
+};
+document.querySelectorAll('.tab').forEach(button=>button.addEventListener('click',()=>{
+  document.querySelector('.tab.active').classList.remove('active');
+  button.classList.add('active');
+  const mode=modes[button.dataset.mode];
+  document.getElementById('dashTitle').textContent=mode.title;
+  document.getElementById('brand').textContent=mode.brand;
+  document.getElementById('banner').innerHTML=mode.banner+`<small>${mode.sub}</small>`;
+  document.getElementById('statLabel').textContent=mode.label;
+  document.getElementById('sales').textContent=mode.sales;
+  document.getElementById('chartTitle').textContent=mode.chart;
+}));
+
+document.getElementById('hamb').addEventListener('click',()=>document.getElementById('nav').classList.toggle('open'));
+document.querySelectorAll('.nav a').forEach(link=>link.addEventListener('click',()=>document.getElementById('nav').classList.remove('open')));
+document.getElementById('chatlaunch').addEventListener('click',()=>document.getElementById('chat').classList.toggle('open'));
+
+document.getElementById('chatform').addEventListener('submit',event=>{
+  event.preventDefault();
+  const input=document.getElementById('chatinput');
+  const value=input.value.trim();
+  if(!value)return;
+  const message=document.createElement('div');
+  message.textContent=value;
+  message.style.cssText='margin:9px 0 0 auto;padding:8px 10px;border-radius:10px 3px 10px 10px;background:#e3f2c4;width:fit-content;max-width:90%';
+  document.getElementById('chatbody').appendChild(message);
+  input.value='';
+});
+
+document.getElementById('leadform').addEventListener('submit',event=>{
+  event.preventDefault();
+  document.getElementById('formmsg').textContent='Thanks for reaching out. Connect a form service to receive real submissions.';
+});
+</script>
 </body>
 </html>
